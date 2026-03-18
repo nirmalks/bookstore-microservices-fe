@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore-frontend-prod
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+      - API_GATEWAY_URL=http://api-gateway:8080
+    restart: always
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    external: true
