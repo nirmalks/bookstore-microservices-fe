@@ -1,3 +1,4 @@
+import z from 'zod';
 import { ApiError } from '../types/error';
 import { Theme } from '../types/user';
 
@@ -41,12 +42,22 @@ export const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) {
     errorMessage = error.message;
   } else if (isApiError(error)) {
-    errorMessage = `${error.message} (${error.status}): ${
-      error.errors?.join(', ') || ''
-    }`;
+    errorMessage = `${error.message} (${error.status}): ${error.errors?.join(', ') || ''
+      }`;
+  } else if (isZodError(error)) {
+    errorMessage = error.issues.map((issue) => issue.message).join(', ') || '';
   }
   return errorMessage;
 };
+
+function isZodError(error: unknown): error is z.ZodError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'issues' in error &&
+    Array.isArray((error as z.ZodError).issues)
+  );
+}
 
 function isApiError(error: unknown): error is ApiError {
   return (

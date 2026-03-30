@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { api } from '../utils/api';
 import { getErrorMessage } from '../utils';
 import { useAppDispatch } from '../store';
+import { authResponseSchema, LoginInput, loginSchema } from '../schemas/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,8 +17,15 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onSubmit = async (data: Record<string, unknown>) => {
+
+  } = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
+  const onSubmit = async (data: LoginInput) => {
     try {
       const formData = new URLSearchParams();
 
@@ -24,8 +33,8 @@ const Login: React.FC = () => {
       const clientSecret = 'secret';
       const credentials = btoa(`${clientId}:${clientSecret}`);
       formData.append('grant_type', 'password');
-      formData.append('username', data.username as string);
-      formData.append('password', data.password as string);
+      formData.append('username', data.username);
+      formData.append('password', data.password);
       formData.append('client_id', 'local-client');
       formData.append('client_secret', 'secret');
       const response = await api.post('/oauth2/token', formData, {
@@ -39,7 +48,7 @@ const Login: React.FC = () => {
       }
       toast.success('User logged in successfully');
 
-      const { access_token, userId, username, role } = response.data;
+      const { access_token, userId, username, role } = authResponseSchema.parse(response.data);
 
       const user = {
         token: access_token,
@@ -66,13 +75,6 @@ const Login: React.FC = () => {
           label="Username"
           name="username"
           register={register}
-          validationSchema={{
-            required: 'username is required',
-            minLength: {
-              value: 3,
-              message: 'Please enter a minimum of 3 characters',
-            },
-          }}
           error={errors.username}
         />
         <FormInput
@@ -80,13 +82,6 @@ const Login: React.FC = () => {
           label="Password"
           name="password"
           register={register}
-          validationSchema={{
-            required: 'password is required',
-            minLength: {
-              value: 3,
-              message: 'Please enter a minimum of 3 characters',
-            },
-          }}
           error={errors.password}
         />
         <div className="mt-4">
