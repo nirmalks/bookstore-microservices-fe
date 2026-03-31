@@ -4,13 +4,15 @@ import BooksContainer from '../components/BooksContainer';
 import { api } from '../utils/api';
 import { ActionFunctionArgs } from 'react-router';
 import { QueryParams } from '../types/params';
+import { bookQuerySchema } from '../schemas/book';
+
 
 const booksSearchUrl = '/books/search';
 const getGenreUrl = '/genres';
 
 const allBooksQuery = (queryParams: QueryParams) => {
   const { search, genre, sort, minPrice, maxPrice, shipping, page } =
-    queryParams;
+    bookQuerySchema.parse(queryParams);
 
   return {
     queryKey: [
@@ -41,24 +43,24 @@ const genreQuery = () => {
 };
 export const booksLoader =
   (queryClient: QueryClient) =>
-  async ({ request }: ActionFunctionArgs) => {
-    const params = Object.fromEntries([
-      ...new URL(request.url).searchParams.entries(),
-    ]);
-    try {
-      const response = await queryClient.ensureQueryData(allBooksQuery(params));
-      const genreResponse = await queryClient.ensureQueryData(genreQuery());
-      const { content: books, ...meta } = response.data;
-      const { content: genres } = genreResponse.data;
-      return { books, params, meta, genres };
-    } catch (error) {
-      console.error('Loader error:', error);
-      throw new Response('Failed to load books', {
-        status: 500,
-        statusText: 'Failed to load books',
-      });
-    }
-  };
+    async ({ request }: ActionFunctionArgs) => {
+      const params = Object.fromEntries([
+        ...new URL(request.url).searchParams.entries(),
+      ]);
+      try {
+        const response = await queryClient.ensureQueryData(allBooksQuery(params));
+        const genreResponse = await queryClient.ensureQueryData(genreQuery());
+        const { content: books, ...meta } = response.data;
+        const { content: genres } = genreResponse.data;
+        return { books, params, meta, genres };
+      } catch (error) {
+        console.error('Loader error:', error);
+        throw new Response('Failed to load books', {
+          status: 500,
+          statusText: 'Failed to load books',
+        });
+      }
+    };
 
 const Books = () => {
   return (

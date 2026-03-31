@@ -15,3 +15,11 @@ export const authResponseSchema = z.object({
 });
 
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+
+export const registerSchema = z.object({
+    username: z.string().min(3, 'Username must be at least 3 characters'),
+    password: z.string().min(3, 'Password must be at least 3 characters'),
+    email: z.email('Invalid email'),
+});
+
+export type RegisterInput = z.infer<typeof registerSchema>;

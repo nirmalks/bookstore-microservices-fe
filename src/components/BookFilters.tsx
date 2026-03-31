@@ -4,7 +4,8 @@ import { useForm } from 'react-hook-form';
 import FormSelect from './FormSelect';
 import FormRange from './FormRange';
 import { Genre } from '../types/genre';
-import { QueryParams } from '../types/params';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { bookQuerySchema, BookQuery } from '../schemas/book';
 
 const BookFilters = () => {
   const { params, genres } = useLoaderData();
@@ -12,19 +13,23 @@ const BookFilters = () => {
   const sortByList = ['title', 'genres', 'price'];
   const sortOrderList = ['asc', 'desc'];
   const { search, price } = params;
-  const { register, handleSubmit } = useForm<QueryParams>();
+  const { register, handleSubmit } = useForm<BookQuery>({
+    resolver: zodResolver(bookQuerySchema),
+  });
   const submit = useSubmit();
-  const onSubmit = (data: QueryParams) => {
-    const queryParams = new URLSearchParams({
-      ...data,
-      minPrice: '0',
-      maxPrice: data.price,
+  const onSubmit = (data: BookQuery) => {
+    const searchParams = new URLSearchParams();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        searchParams.append(key, value.toString());
+      }
     });
-    const formData = new FormData();
-    for (const [key, value] of queryParams.entries()) {
-      formData.append(key, value);
+
+    if (data.price !== undefined) {
+      searchParams.set('maxPrice', data.price.toString());
     }
-    submit(formData, { method: 'get' });
+
+    submit(searchParams, { method: 'get' });
   };
 
   return (

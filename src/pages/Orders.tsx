@@ -8,13 +8,14 @@ import dayjs from 'dayjs';
 import PaginationContainer from '../components/PaginationContainer';
 import { getErrorMessage } from '../utils';
 import { AppDispatch, RootState } from '../store';
-import { QueryParams } from '../types/params';
 import { User } from '../types/user';
 import { QueryClient } from '@tanstack/react-query';
+import { orderQuerySchema } from '../schemas/order';
 dayjs.extend(advancedFormat);
-const ordersQuery = (params: QueryParams, user: User) => {
+const ordersQuery = (params: unknown, user: User) => {
+  const { page } = orderQuerySchema.parse(params);
   return {
-    queryKey: ['orders', user.userId, params.page ? parseInt(params.page) : 1],
+    queryKey: ['orders', user.userId, page],
     queryFn: () =>
       api.get(`/orders/${user.userId}`, {
         params,

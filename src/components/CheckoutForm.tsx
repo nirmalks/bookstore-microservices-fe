@@ -7,9 +7,10 @@ import { clearCart } from '../features/cart/cartSlice';
 import { api } from '../utils/api';
 import { QueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '../utils';
-import { CheckoutFormData } from '../types/checkout';
 import { Book } from '../types/books';
 import { AppDispatch, RootState } from '../store';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { checkoutFormDataSchema, CheckoutFormData } from '../schemas/checkout';
 
 export const checkoutAction = (
   queryClient: QueryClient,
@@ -59,7 +60,16 @@ const CheckoutForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CheckoutFormData>();
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutFormDataSchema),
+    defaultValues: {
+      address: '',
+      city: '',
+      state: '',
+      country: '',
+      pinCode: '',
+    },
+  });
   const submit = useSubmit();
   const onSubmit = (data: CheckoutFormData) => {
     return submit(data, { method: 'post' });
@@ -73,9 +83,6 @@ const CheckoutForm = () => {
           name="address"
           type="text"
           register={register}
-          validationSchema={{
-            required: 'address is required',
-          }}
           error={errors.address}
         />
         <FormInput
@@ -83,9 +90,6 @@ const CheckoutForm = () => {
           name="city"
           type="text"
           register={register}
-          validationSchema={{
-            required: 'city  is required',
-          }}
           error={errors.city}
         />
         <FormInput
@@ -93,9 +97,6 @@ const CheckoutForm = () => {
           name="state"
           type="text"
           register={register}
-          validationSchema={{
-            required: 'state  is required',
-          }}
           error={errors.state}
         />
         <FormInput
@@ -103,9 +104,6 @@ const CheckoutForm = () => {
           name="country"
           type="text"
           register={register}
-          validationSchema={{
-            required: 'country  is required',
-          }}
           error={errors.country}
         />
         <FormInput
@@ -113,9 +111,6 @@ const CheckoutForm = () => {
           name="pinCode"
           type="text"
           register={register}
-          validationSchema={{
-            required: 'pincode is required',
-          }}
           error={errors.pinCode}
         />
         <div className="mt-4 col-span-2">
