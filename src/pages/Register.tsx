@@ -5,15 +5,24 @@ import { SubmitBtn } from '../components/SubmitBtn';
 import { useForm } from 'react-hook-form';
 import { api } from '../utils/api';
 import { getErrorMessage } from '../utils';
+import { RegisterInput, registerSchema } from '../schemas/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const Register: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+      email: '',
+    },
+  });
   const navigate = useNavigate();
-  const onSubmit = async (data: Record<string, unknown>) => {
+  const onSubmit = async (data: RegisterInput) => {
     try {
       const response = await api.post('/users/register', data);
       if (response.status !== 201 || !response.data) {
@@ -38,13 +47,6 @@ const Register: React.FC = () => {
           label="Username"
           name="username"
           register={register}
-          validationSchema={{
-            required: 'username is required',
-            minLength: {
-              value: 3,
-              message: 'Please enter a minimum of 3 characters',
-            },
-          }}
           error={errors.username}
         />
         <FormInput
@@ -52,9 +54,6 @@ const Register: React.FC = () => {
           label="Email"
           name="email"
           register={register}
-          validationSchema={{
-            required: 'email is required',
-          }}
           error={errors.email}
         />
         <FormInput
@@ -62,13 +61,6 @@ const Register: React.FC = () => {
           label="Password"
           name="password"
           register={register}
-          validationSchema={{
-            required: 'username is required',
-            minLength: {
-              value: 3,
-              message: 'Please enter a minimum of 3 characters',
-            },
-          }}
           error={errors.password}
         />
         <div className="mt-4">
