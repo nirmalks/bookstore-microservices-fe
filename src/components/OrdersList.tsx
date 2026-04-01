@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { useLoaderData } from 'react-router';
-import { Order, OrdersListData } from '../types/order';
+import { Order, OrdersListData } from '../schemas/order';
 
 const OrdersList = (): JSX.Element => {
   const { orders } = useLoaderData<OrdersListData>();

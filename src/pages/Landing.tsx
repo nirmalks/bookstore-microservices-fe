@@ -2,6 +2,7 @@ import { QueryClient } from '@tanstack/react-query';
 import FeaturedBooks from '../components/FeaturedBooks';
 import Hero from '../components/Hero';
 import { api } from '../utils/api';
+import { bookListSchema } from '../schemas/book';
 
 const url = '/books';
 
@@ -16,7 +17,7 @@ const featuredBooksQuery = {
 export const landingLoader = (queryClient: QueryClient) => async () => {
   try {
     const response = await queryClient.ensureQueryData(featuredBooksQuery);
-    const books = response.data.content;
+    const books = bookListSchema.parse(response.data.content);
     return { books };
   } catch (error) {
     console.error('Error fetching featured books:', error);

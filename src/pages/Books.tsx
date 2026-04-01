@@ -3,9 +3,8 @@ import BookFilters from '../components/BookFilters';
 import BooksContainer from '../components/BooksContainer';
 import { api } from '../utils/api';
 import { ActionFunctionArgs } from 'react-router';
-import { QueryParams } from '../types/params';
-import { bookQuerySchema } from '../schemas/book';
-
+import { bookListSchema, bookQuerySchema, genreListSchema } from '../schemas/book';
+import { metaSchema, QueryParams } from '../schemas/api';
 
 const booksSearchUrl = '/books/search';
 const getGenreUrl = '/genres';
@@ -50,8 +49,11 @@ export const booksLoader =
       try {
         const response = await queryClient.ensureQueryData(allBooksQuery(params));
         const genreResponse = await queryClient.ensureQueryData(genreQuery());
-        const { content: books, ...meta } = response.data;
-        const { content: genres } = genreResponse.data;
+
+        const books = bookListSchema.parse(response.data.content);
+        const meta = metaSchema.parse(response.data);
+        const genres = genreListSchema.parse(genreResponse.data.content);
+
         return { books, params, meta, genres };
       } catch (error) {
         console.error('Loader error:', error);

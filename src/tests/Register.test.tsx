@@ -27,7 +27,7 @@ const renderComponent = () => {
 };
 
 describe('register page', () => {
-  beforeEach(() => {});
+  beforeEach(() => { });
   test('register will display the initial fields', () => {
     renderComponent();
 
@@ -63,7 +63,7 @@ describe('register page', () => {
     await user.click(screen.getByRole('button', { name: /register/i }));
 
     expect(
-      screen.getByText(/Please enter a minimum of 3 characters/i)
+      screen.getByText(/Username must be at least 3 characters/i)
     ).toBeInTheDocument();
   });
 });

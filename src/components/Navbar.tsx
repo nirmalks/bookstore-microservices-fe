@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, toggleTheme } from '../features/user/userSlice';
 import { BsCart } from 'react-icons/bs';
 import { FaBarsStaggered } from 'react-icons/fa6';
-import { AppState } from '../types/store';
+import { AppState } from '../schemas/store';
 
 const Navbar = () => {
   const navigate = useNavigate();

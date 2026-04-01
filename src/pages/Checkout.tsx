@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import CartTotal from '../components/CartTotal';
 import CheckoutForm from '../components/CheckoutForm';
-import { AppState } from '../types/store';
+import { AppState } from '../schemas/store';
 import { useEffect } from 'react';
 
 const Checkout: React.FC = () => {

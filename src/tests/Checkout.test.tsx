@@ -1,10 +1,11 @@
 import { screen } from '@testing-library/react';
 
 import { renderWithProviders } from './test-utils';
-import { Book } from '../types/books';
+
 import userEvent from '@testing-library/user-event';
 import Checkout from '../pages/Checkout';
 import { RouteObject } from 'react-router';
+import { Book } from '../schemas/book';
 
 const mockSubmit = jest.fn();
 jest.mock('../utils/api');

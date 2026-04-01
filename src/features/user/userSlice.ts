@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { getThemeFromLocalStorage, getUserFromLocalStorage, themes } from '../../utils';
-import { Theme, User, UserState } from '../../types/user';
+import { Theme, User, UserState } from '../../schemas/user';
 
 const initialState: UserState = {
   user: getUserFromLocalStorage(),

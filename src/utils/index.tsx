@@ -1,10 +1,23 @@
 import z from 'zod';
-import { ApiError } from '../types/error';
-import { Theme } from '../types/user';
+import { ApiError } from '../schemas/api';
+import { Theme } from '../schemas/user';
+import { userSchema } from '../schemas/user';
 
 export const getUserFromLocalStorage = () => {
   const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
+  if (!user) return null;
+
+  try {
+    const result = userSchema.safeParse(JSON.parse(user));
+    if (result.success) {
+      return result.data;
+    }
+  } catch (error) {
+    console.error('Local storage hydration error:', error);
+  }
+
+  localStorage.removeItem('user');
+  return null;
 };
 
 export const themes = {

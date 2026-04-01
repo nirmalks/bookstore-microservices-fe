@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router';
-import { AppState } from '../types/store';
+import { AppState } from '../schemas/store';
 
 const links = [
   { id: 1, url: '/', text: 'Home' },

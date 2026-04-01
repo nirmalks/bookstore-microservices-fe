@@ -7,10 +7,11 @@ import { clearCart } from '../features/cart/cartSlice';
 import { api } from '../utils/api';
 import { QueryClient } from '@tanstack/react-query';
 import { getErrorMessage } from '../utils';
-import { Book } from '../types/books';
+
 import { AppDispatch, RootState } from '../store';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutFormDataSchema, CheckoutFormData } from '../schemas/checkout';
+import { Book } from '../schemas/book';
 
 export const checkoutAction = (
   queryClient: QueryClient,

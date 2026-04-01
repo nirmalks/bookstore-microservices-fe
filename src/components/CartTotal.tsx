@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { formatPrice } from '../utils';
-import { AppState } from '../types/store';
-
+import { AppState } from '../schemas/store';
 const CartTotal = () => {
   const { cartTotal, shipping, tax, orderTotal } = useSelector(
     (state: AppState) => state.cartState

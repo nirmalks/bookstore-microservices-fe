@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from 'react-router';
 import { formatPrice } from '../utils';
-import { Book } from '../types/books';
+import { Book } from '../schemas/book';
 
 const BooksGrid: React.FC = () => {
   const { books } = useLoaderData();
