@@ -3,9 +3,13 @@ import FormInput from './FormInput';
 import { useForm } from 'react-hook-form';
 import FormSelect from './FormSelect';
 import FormRange from './FormRange';
-import { Genre } from '../types/genre';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { bookQuerySchema, BookQuery } from '../schemas/book';
+import {
+  bookQuerySchema,
+  BookQuery,
+  BookQueryInput,
+  Genre,
+} from '../schemas/book';
 
 const BookFilters = () => {
   const { params, genres } = useLoaderData();
@@ -13,7 +17,7 @@ const BookFilters = () => {
   const sortByList = ['title', 'genres', 'price'];
   const sortOrderList = ['asc', 'desc'];
   const { search, price } = params;
-  const { register, handleSubmit } = useForm<BookQuery>({
+  const { register, handleSubmit } = useForm<BookQueryInput, undefined, BookQuery>({
     resolver: zodResolver(bookQuerySchema),
   });
   const submit = useSubmit();

@@ -1,13 +1,4 @@
-import { Book } from "./books";
-
-export interface CartState {
-  cartItems: Book[];
-  numItemsInCart: number;
-  cartTotal: number;
-  shipping: number;
-  tax: number;
-  orderTotal: number;
-}
+import { Book } from "../schemas/book";
 
 export type CartItemProps = {
   item: Book;

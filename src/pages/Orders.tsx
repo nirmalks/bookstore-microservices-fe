@@ -8,9 +8,10 @@ import dayjs from 'dayjs';
 import PaginationContainer from '../components/PaginationContainer';
 import { getErrorMessage } from '../utils';
 import { AppDispatch, RootState } from '../store';
-import { User } from '../types/user';
+import { User } from '../schemas/user';
 import { QueryClient } from '@tanstack/react-query';
-import { orderQuerySchema } from '../schemas/order';
+import { orderListSchema, orderQuerySchema } from '../schemas/order';
+import { metaSchema } from '../schemas/api';
 dayjs.extend(advancedFormat);
 const ordersQuery = (params: unknown, user: User) => {
   const { page } = orderQuerySchema.parse(params);
@@ -31,31 +32,32 @@ export const ordersLoader =
     },
     queryClient: QueryClient
   ) =>
-  async ({ request }: ActionFunctionArgs) => {
-    const user = store.getState().userState.user;
+    async ({ request }: ActionFunctionArgs) => {
+      const user = store.getState().userState.user;
 
-    if (!user) {
-      toast.warn('You must logged in to view orders');
-      return redirect('/login');
-    }
-    const params = Object.fromEntries([
-      ...new URL(request.url).searchParams.entries(),
-    ]);
-    try {
-      const response = await queryClient.ensureQueryData(
-        ordersQuery(params, user)
-      );
-      if (response.status !== 200) {
-        throw new Error('Unable to fetch orders');
+      if (!user) {
+        toast.warn('You must logged in to view orders');
+        return redirect('/login');
       }
-      const { content: orders, ...meta } = response.data;
-      return { orders, meta, user };
-    } catch (error: unknown) {
-      const errorMessage = getErrorMessage(error);
-      toast.error(errorMessage);
-      return null;
-    }
-  };
+      const params = Object.fromEntries([
+        ...new URL(request.url).searchParams.entries(),
+      ]);
+      try {
+        const response = await queryClient.ensureQueryData(
+          ordersQuery(params, user)
+        );
+        if (response.status !== 200) {
+          throw new Error('Unable to fetch orders');
+        }
+        const meta = metaSchema.parse(response.data);
+        const orders = orderListSchema.parse(response.data.content);
+        return { orders, meta, user };
+      } catch (error: unknown) {
+        const errorMessage = getErrorMessage(error);
+        toast.error(errorMessage);
+        return null;
+      }
+    };
 
 const Orders = (): JSX.Element => {
   return (

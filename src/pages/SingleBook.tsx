@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { addItem } from '../features/cart/cartSlice';
 import { useDispatch } from 'react-redux';
 import { QueryClient } from '@tanstack/react-query';
-import { ParamsWithId } from '../types/params';
+import { bookSchema } from '../schemas/book';
+import { ParamsWithId } from '../schemas/api';
 
 const singleBookQuery = (id: string) => {
   return {
@@ -16,12 +17,13 @@ const singleBookQuery = (id: string) => {
 
 export const singleBookLoader =
   (queryClient: QueryClient) =>
-  async ({ params }: ParamsWithId) => {
-    const response = await queryClient.ensureQueryData(
-      singleBookQuery(params.id!)
-    );
-    return { book: response.data };
-  };
+    async ({ params }: ParamsWithId) => {
+      const response = await queryClient.ensureQueryData(
+        singleBookQuery(params.id!)
+      );
+      const book = bookSchema.parse(response.data);
+      return { book };
+    };
 
 const SingleBook: React.FC = () => {
   const { book } = useLoaderData();

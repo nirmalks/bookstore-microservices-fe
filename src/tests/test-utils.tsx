@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router';
 import userReducer from '../features/user/userSlice';
 import cartReducer from '../features/cart/cartSlice';
-import { UserState } from '../types/user';
+import { UserState } from '../schemas/user';
 import { setupInterceptors } from '../utils/interceptors';
-import { CartState } from '../types/cart';
+import { CartState } from '../schemas/cart';
 
 const createStore = (
   preloadedState?: Partial<{ userState: UserState; cartState: CartState }>
@@ -16,7 +16,8 @@ const createStore = (
     reducer: {
       userState: (state: UserState | undefined, action: UnknownAction) =>
         userReducer(state as UserState, action),
-      cartState: cartReducer,
+      cartState: (state: CartState | undefined, action: UnknownAction) =>
+        cartReducer(state as CartState, action),
     },
     preloadedState,
   });

@@ -1,20 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import { Book } from '../../types/books';
-import { CartState } from '../../types/cart';
-
-interface AddItemPayload {
-  book: Book;
-}
-
-interface RemoveItemPayload {
-  id: number;
-}
-
-interface EditItemPayload {
-  id: number;
-  quantity: number;
-}
+import { Book } from '../../schemas/book';
+import { CartState, AddItemPayload, RemoveItemPayload, EditItemPayload, cartStateSchema } from '../../schemas/cart';
 
 const defaultState = {
   cartItems: [],
@@ -25,9 +12,20 @@ const defaultState = {
   orderTotal: 0,
 };
 
-const getCartFromLocalStorage = () => {
-  const cart = localStorage.getItem('cart')
-  return cart ? JSON.parse(cart) : defaultState;
+const getCartFromLocalStorage = (): CartState => {
+  const cart = localStorage.getItem('cart');
+  if (!cart) return defaultState;
+  
+  try {
+    const result = cartStateSchema.safeParse(JSON.parse(cart));
+    if (result.success) {
+      return result.data;
+    }
+  } catch (error) {
+    console.error('Cart hydration error:', error);
+  }
+  
+  return defaultState;
 };
 
 const cartSlice = createSlice({

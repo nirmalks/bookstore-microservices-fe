@@ -3,7 +3,7 @@ import SectionTitle from '../components/SectionTitle';
 import CartItemsList from '../components/CartItemsList';
 import CartTotal from '../components/CartTotal';
 import { Link } from 'react-router';
-import { AppState } from '../types/store';
+import { AppState } from '../schemas/store';
 
 const Cart: React.FC = () => {
   const user = useSelector((state: AppState) => state.userState.user);

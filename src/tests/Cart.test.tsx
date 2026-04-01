@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import Cart from '../pages/Cart';
 import { renderWithProviders } from './test-utils';
-import { Book } from '../types/books';
 import userEvent from '@testing-library/user-event';
+import { Book } from '../schemas/book';
 
 describe('Cart Page Tests', () => {
   const sampleBook: Book = {

@@ -26,7 +26,7 @@ const renderComponent = () => {
 };
 
 describe('login', () => {
-  beforeEach(() => {});
+  beforeEach(() => { });
   test('login will display the initial fields', () => {
     renderComponent();
 
@@ -47,10 +47,16 @@ describe('login', () => {
     await user.type(screen.getByLabelText(/username/i), 'nirmalk');
     await user.type(screen.getByLabelText(/password/i), 'password');
     await user.click(screen.getByRole('button', { name: /login/i }));
-    expect(api.post).toHaveBeenCalledWith('/login', {
-      username: 'nirmalk',
-      password: 'password',
-    });
+    expect(api.post).toHaveBeenCalledWith(
+      '/oauth2/token',
+      expect.any(URLSearchParams),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          'Authorization': 'Basic bG9jYWwtY2xpZW50OnNlY3JldA==',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        }),
+      })
+    );
   });
 
   test('submits form with invalid username will show error and prevent submission', async () => {
@@ -62,7 +68,7 @@ describe('login', () => {
     await user.click(screen.getByRole('button', { name: /login/i }));
 
     expect(
-      screen.getByText(/Please enter a minimum of 3 characters/i)
+      screen.getByText(/Username must be at least 3 characters/i)
     ).toBeInTheDocument();
   });
 });

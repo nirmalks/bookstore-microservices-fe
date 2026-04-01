@@ -15,10 +15,10 @@ const mockSubmit = jest.fn();
 const renderComponent = () => {
   (ReactRouter.useSubmit as jest.Mock).mockReturnValue(mockSubmit);
   (ReactRouter.useLoaderData as jest.Mock).mockReturnValue({
-    params: { search: 'book', price: '300' },
+    params: { search: 'book', price: 300 },
     genres: [
-      { id: '1', name: 'Fiction' },
-      { id: '2', name: 'History' },
+      { id: 1, name: 'Fiction' },
+      { id: 2, name: 'History' },
     ],
   });
 
@@ -56,20 +56,18 @@ describe('book filters', () => {
 
     expect(mockSubmit).toHaveBeenCalledTimes(1);
 
-    const formDataArg = mockSubmit.mock.calls[0][0] as FormData;
-
-    const entries = Object.fromEntries(formDataArg.entries());
+    const searchParamsArg = mockSubmit.mock.calls[0][0] as URLSearchParams;
+    const entries = Object.fromEntries(searchParamsArg.entries());
     expect(entries).toEqual({
       search: 'book A',
       genre: 'Fiction',
       sortBy: 'price',
       sortOrder: 'desc',
-      minPrice: '0',
       maxPrice: '300',
       price: '300',
     });
 
-    expect(mockSubmit).toHaveBeenCalledWith(expect.any(FormData), {
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(URLSearchParams), {
       method: 'get',
     });
   });

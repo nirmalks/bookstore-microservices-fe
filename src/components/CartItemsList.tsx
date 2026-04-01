@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import CartItem from './CartItem';
-import { AppState } from '../types/store';
+import { AppState } from '../schemas/store';
 
 const CartItemsList = () => {
   const cartItems = useSelector((state: AppState) => state.cartState.cartItems);
