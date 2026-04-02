@@ -12,8 +12,10 @@
     "lint": "eslint .",
     "preview:ci": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
     "preview": "vite preview",
-    "test": "jest --watchAll",
-    "cov": "jest --coverage --collectCoverageFrom='src/**/*.{ts,tsx}'"
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage",
+    "test:coverage:ci": "jest --coverage --ci --watchAll=false"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -6,4 +6,25 @@ export default {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy", // The mock for style related files
     "^@/(.*)$": "<rootDir>/src/$1", // [optional] Are you using aliases?
   },
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "clover", "json-summary"],
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/src/main.tsx",
+    "/src/vite-env.d.ts",
+    "/src/monitoring.ts",
+    "\\.config\\.(js|ts)$",
+    "\\.d\\.ts$",
+    "/__mocks__/",
+    "/tests/"
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 30,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
 };
