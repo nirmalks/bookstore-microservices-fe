@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { configureStore, UnknownAction } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { createBrowserRouter, RouteObject, RouterProvider } from 'react-router';
+import { createBrowserRouter, createMemoryRouter, RouteObject, RouterProvider } from 'react-router';
 import userReducer from '../features/user/userSlice';
 import cartReducer from '../features/cart/cartSlice';
 import { UserState } from '../schemas/user';
@@ -40,19 +40,29 @@ export const renderWithProviders = (
     routes?: RouteObject[];
   } & RenderOptions = {}
 ) => {
-  const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-    const defaultRoutes: RouteObject[] = [
-      {
-        path: '/',
-        element: children,
-      },
-      {
-        path: '/orders',
-        element: <div>Orders Page</div>,
-      },
-    ];
-    const router = createBrowserRouter(routes || defaultRoutes, {});
+  // 1. Define the routes
+  const defaultRoutes: RouteObject[] = [
+    {
+      path: '/',
+      element: ui, // Pass the UI directly into the route
+    },
+    {
+      path: '/orders',
+      element: <div>Orders Page</div>,
+    },
+    {
+      path: '/login',
+      element: <div>Login Page</div>,
+    },
+  ];
 
+  // 2. Create the router OUTSIDE the Wrapper so we can return it
+  // Use createMemoryRouter instead of createBrowserRouter for Node/Jest environments
+  const router = createMemoryRouter(routes || defaultRoutes, {
+    initialEntries: ['/'],
+  });
+
+  const TestWrapper = () => {
     return (
       <Provider store={store}>
         <RouterProvider router={router} />
@@ -60,7 +70,8 @@ export const renderWithProviders = (
     );
   };
 
-  const result = render(<TestWrapper>{ui}</TestWrapper>, renderOptions);
+  const result = render(<TestWrapper />, renderOptions);
 
-  return { store, ...result };
+  // 3. Return the router here
+  return { store, router, ...result };
 };

@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 
 import { renderWithProviders } from './test-utils';
 
@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import Checkout from '../pages/Checkout';
 import { RouteObject } from 'react-router';
 import { Book } from '../schemas/book';
+import { toast } from 'react-toastify';
 
 const mockSubmit = jest.fn();
 jest.mock('../utils/api');
@@ -14,6 +15,13 @@ jest.mock('react-router', () => ({
   useLoaderData: jest.fn(),
   useSubmit: jest.fn(() => mockSubmit),
 }));
+jest.mock('react-toastify', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn()
+  },
+}))
 
 const routes: RouteObject[] = [
   {
@@ -142,5 +150,28 @@ describe('Checkout Page Tests', () => {
     expect(submittedData.state).toBe('tnasd');
     expect(submittedData.country).toBe('inasds');
     expect(submittedData.pinCode).toBe('600077');
+  });
+
+  test('redirects to login if user is not authenticated', async () => {
+    const { router } = renderWithProviders(<Checkout />, {
+      preloadedState: {
+        userState: { user: null, theme: 'light' },
+        cartState: {
+          cartItems: [],
+          numItemsInCart: 0,
+          cartTotal: 0,
+          shipping: 0,
+          tax: 0,
+          orderTotal: 0,
+        },
+      },
+      routes,
+    });
+
+    await waitFor(() => {
+      expect(router.state.location.pathname).toBe('/login');
+    });
+
+    expect(toast.warn).toHaveBeenCalledWith('You must be logged in to checkout');
   });
 });
