@@ -15,7 +15,6 @@ const defaultState = {
 const getCartFromLocalStorage = (): CartState => {
   const cart = localStorage.getItem('cart');
   if (!cart) return defaultState;
-  
   try {
     const result = cartStateSchema.safeParse(JSON.parse(cart));
     if (result.success) {
@@ -24,7 +23,6 @@ const getCartFromLocalStorage = (): CartState => {
   } catch (error) {
     console.error('Cart hydration error:', error);
   }
-  
   return defaultState;
 };
 
@@ -35,7 +33,6 @@ const cartSlice = createSlice({
     addItem: (state: CartState, action: PayloadAction<AddItemPayload>) => {
       const { book } = action.payload
       const existingBook = state.cartItems.find((existingBook: Book) => book.id === existingBook?.id)
-      console.log(existingBook)
       if (existingBook) {
         existingBook.quantity += book.quantity;
       } else {

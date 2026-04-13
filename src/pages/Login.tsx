@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
 
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -85,7 +85,7 @@ const Login: React.FC = () => {
           error={errors.password}
         />
         <div className="mt-4">
-          <SubmitBtn text="Login" />
+          <SubmitBtn text="Login" isSubmitting={isSubmitting} />
         </div>
         <p className="text-center">
           Not a member yet?{' '}

@@ -60,7 +60,7 @@ const CheckoutForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormDataSchema),
     defaultValues: {
@@ -115,7 +115,7 @@ const CheckoutForm = () => {
           error={errors.pinCode}
         />
         <div className="mt-4 col-span-2">
-          <SubmitBtn text="Order now" />
+          <SubmitBtn text="Order now" isSubmitting={isSubmitting} />
         </div>
       </div>
     </form>

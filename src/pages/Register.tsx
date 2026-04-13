@@ -12,7 +12,7 @@ const Register: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
           error={errors.password}
         />
         <div className="mt-4">
-          <SubmitBtn text="Register" />
+          <SubmitBtn text="Register" isSubmitting={isSubmitting} />
         </div>
         <p className="text-center">
           Already a member?
