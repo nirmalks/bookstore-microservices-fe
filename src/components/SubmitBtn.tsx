@@ -12,7 +12,10 @@ export const SubmitBtn = ({ text = 'Submit', isSubmitting = false }: SubmitBtnPr
     >
       {isSubmitting ? (
         <>
-          <span className="loading loading-spinner">Submitting...</span>
+          <span className="flex items-center justify-center gap-2">
+            <span className="loading loading-spinner loading-xs"></span>
+            Submitting...
+          </span>
         </>
       ) : (
         text
