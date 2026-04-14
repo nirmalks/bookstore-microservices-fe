@@ -4,6 +4,14 @@ import { Order, OrdersListData } from '../schemas/order';
 
 const OrdersList = (): JSX.Element => {
   const { orders } = useLoaderData<OrdersListData>();
+  if (!orders || orders.length === 0) {
+    return (
+      <div className="mt-8 text-center">
+        <h2 className="text-xl font-semibold">No orders found</h2>
+        <p className="text-base-content/60">It looks like you haven't placed any orders yet.</p>
+      </div>
+    );
+  }
   return (
     <div className="mt-8">
       <div className="overflow-x-auto">

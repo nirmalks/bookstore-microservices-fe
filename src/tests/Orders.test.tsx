@@ -22,6 +22,11 @@ jest.mock('react-router', () => ({
   useNavigate: jest.fn(),
 }));
 
+const mockLoader = jest.fn(() => {
+  toast.warn('You must log in to view orders');
+  return redirect('/login');
+});
+
 describe('OrdersPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -72,10 +77,7 @@ describe('OrdersPage', () => {
   });
 
   it('redirects to login and shows warning if user is not logged in', async () => {
-    const mockLoader = jest.fn(() => {
-      toast.warn('You must log in to view orders');
-      return redirect('/login');
-    });
+
     (useLoaderData as jest.Mock).mockImplementationOnce(mockLoader);
     const routes = [
       {
@@ -105,5 +107,37 @@ describe('OrdersPage', () => {
     await waitFor(() => {
       expect(router.state.location.pathname).toBe('/login');
     });
+  });
+
+  it('renders empty state when no orders are found', async () => {
+    (useLoaderData as jest.Mock).mockReturnValue({
+      orders: [],
+      meta: {
+        number: 0,
+        totalPages: 0,
+      },
+    });
+
+    const routes = [
+      {
+        path: '/orders',
+        element: <Orders />,
+        loader: mockLoader,
+      },
+      {
+        path: '/login',
+        element: <div>Login Page</div>,
+      },
+    ];
+
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/orders'],
+    });
+
+    render(<RouterProvider router={router} />);
+
+
+    expect(await screen.findByText('No orders found')).toBeInTheDocument();
+
   });
 });
