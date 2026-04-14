@@ -34,7 +34,6 @@ export const ordersLoader =
   ) =>
     async ({ request }: ActionFunctionArgs) => {
       const user = store.getState().userState.user;
-
       if (!user) {
         toast.warn('You must logged in to view orders');
         return redirect('/login');

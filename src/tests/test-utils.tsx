@@ -1,8 +1,8 @@
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { configureStore, UnknownAction } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { createBrowserRouter, createMemoryRouter, RouteObject, RouterProvider } from 'react-router';
+import { createMemoryRouter, RouteObject, RouterProvider } from 'react-router';
 import userReducer from '../features/user/userSlice';
 import cartReducer from '../features/cart/cartSlice';
 import { UserState } from '../schemas/user';
