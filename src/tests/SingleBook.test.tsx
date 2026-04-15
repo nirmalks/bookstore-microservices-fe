@@ -12,6 +12,10 @@ jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useLoaderData: jest.fn(),
 }));
+
+jest.mock('../features/cart/cartSlice', () => ({
+  addItem: jest.fn((payload) => ({ type: 'cart/addItem', payload })),
+}));
 const mockDispatch = jest.fn();
 
 beforeEach(() => {
@@ -80,6 +84,7 @@ describe('<SingleBook />', () => {
   });
 
   it('updates quantity and adjusts stock in payload', async () => {
+    (ReactRouter.useLoaderData as jest.Mock).mockReturnValue({ book: mockBook });
     renderComponent();
     const select = screen.getByRole('combobox');
     await userEvent.selectOptions(select, '3');
@@ -96,4 +101,17 @@ describe('<SingleBook />', () => {
       },
     });
   });
+
+  it('display stock is 0 and item as unavailable when book is out of stock', () => {
+    const outOfStockBook = { ...mockBook, stock: 0 };
+    (ReactRouter.useLoaderData as jest.Mock).mockReturnValue({ book: outOfStockBook });
+
+    renderComponent();
+
+
+    expect(screen.getByText(/This item is currently unavailable./i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Out of Stock/i })).toBeInTheDocument();
+  });
+
+
 });

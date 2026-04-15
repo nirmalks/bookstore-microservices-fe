@@ -31,7 +31,7 @@ const SingleBook: React.FC = () => {
     book;
   const image = `/images/${imagePath}`;
   const formattedPrice = formatPrice(price);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(stock > 0 ? 1 : 0);
   const handleQuantity = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setQuantity(parseInt(e.target.value));
   };
@@ -69,20 +69,29 @@ const SingleBook: React.FC = () => {
                 Quantity
               </h4>
             </label>
-            <select
-              className="select select-secondary select-bordered select-md"
-              value={quantity}
-              onChange={handleQuantity}
-            >
-              {generateQuantityOptions(stock)}
-            </select>
+            {
+              stock > 0 ? (
+                <select
+                  className="select select-secondary select-bordered select-md"
+                  value={quantity}
+                  onChange={handleQuantity}
+                >
+
+                  {generateQuantityOptions(stock)}
+                </select>
+              ) : (
+                <p className="text-error font-bold">This item is currently unavailable.</p>
+              )
+            }
+
           </div>
           <div className="mt-10 ">
             <button
               className="btn btn-secondary btn-md"
+              disabled={stock === 0}
               onClick={() => dispatch(addItem({ book: updatedBook }))}
             >
-              Add to Cart
+              {stock > 0 ? 'Add to Cart' : 'Out of Stock'}
             </button>
           </div>
         </div>
