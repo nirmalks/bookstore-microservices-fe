@@ -43,7 +43,7 @@ export const Hero = () => {
           </Link>
         </div>
       </div>
-      <div className="md:ml-4 carousel max-w-full h-72">
+      <div ref={carouselRef} className="md:ml-4 carousel max-w-full h-72">
         <div id="slide1" className="carousel-item relative w-full ">
           <img src={prob} className="w-full rounded-lg " />
           <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">

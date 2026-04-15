@@ -29,7 +29,7 @@ const BookFilters = () => {
       }
     });
 
-    if (data.price !== undefined) {
+    if (data.price) {
       searchParams.set('maxPrice', data.price.toString());
     }
 

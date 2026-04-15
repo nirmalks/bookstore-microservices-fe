@@ -16,7 +16,6 @@ const PaginationContainer = () => {
     // Convert one-based page number to zero-based for navigation
     const zeroBasedPage = pageNumber - 1;
     const searchParams = new URLSearchParams(search);
-    console.log('insdi handle change', zeroBasedPage);
     searchParams.set('page', zeroBasedPage.toString());
     navigate(`${pathname}?${searchParams.toString()}`);
   };
@@ -42,11 +41,10 @@ const PaginationContainer = () => {
             <button
               key={currentPageNumber}
               onClick={() => handlePageChange(currentPageNumber)}
-              className={`btn btn-xs sm:btn-md border-none join-item ${
-                currentPageNumber === number + 1 // Compare one-based to UI numbers
+              className={`btn btn-xs sm:btn-md border-none join-item ${currentPageNumber === number + 1 // Compare one-based to UI numbers
                   ? 'bg-base-300 border-base-300 '
                   : ''
-              }`}
+                }`}
             >
               {currentPageNumber}
             </button>
