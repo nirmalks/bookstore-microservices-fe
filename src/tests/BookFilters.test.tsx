@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BookFilters from '../components/BookFilters';
 import * as ReactRouter from 'react-router';
@@ -12,10 +12,13 @@ jest.mock('react-router', () => ({
 
 const mockSubmit = jest.fn();
 
-const renderComponent = () => {
+const renderComponent = (customParams: {
+  search?: string;
+  price?: number | string;
+} = { search: 'book', price: 300 }) => {
   (ReactRouter.useSubmit as jest.Mock).mockReturnValue(mockSubmit);
   (ReactRouter.useLoaderData as jest.Mock).mockReturnValue({
-    params: { search: 'book', price: 300 },
+    params: customParams,
     genres: [
       { id: 1, name: 'Fiction' },
       { id: 2, name: 'History' },
@@ -32,6 +35,7 @@ const renderComponent = () => {
 describe('book filters', () => {
   beforeEach(() => {
     mockSubmit.mockClear();
+    jest.clearAllMocks();
   });
   test('renders form inputs with initial values', () => {
     renderComponent();
@@ -77,4 +81,51 @@ describe('book filters', () => {
     const resetLink = screen.getByRole('link', { name: /reset/i });
     expect(resetLink).toHaveAttribute('href', '/books');
   });
+
+  test('updates price display when slider moves', async () => {
+    renderComponent();
+    const priceSlider = screen.getByLabelText(/choose price range/i);
+
+    fireEvent.change(priceSlider, { target: { value: '150' } });
+    expect(screen.getByText('150')).toBeInTheDocument();
+  });
+
+  test('handles empty search input submission', async () => {
+    renderComponent();
+    const searchInput = screen.getByLabelText(/search book/i);
+    fireEvent.change(searchInput, { target: { value: '' } });
+    await userEvent.click(screen.getByRole('button', { name: /search/i }));
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+    const searchParamsArg = mockSubmit.mock.calls[0][0] as URLSearchParams;
+    const entries = Object.fromEntries(searchParamsArg.entries());
+    expect(entries).toEqual({
+      search: '',
+      genre: 'Fiction',
+      sortBy: 'title',
+      sortOrder: 'asc',
+      maxPrice: '300',
+      price: '300',
+
+    });
+    expect(mockSubmit).toHaveBeenCalledWith(expect.any(URLSearchParams), {
+      method: 'get',
+    });
+
+
+  });
+
+  test('maxPrice is set as 1000 from ui from html elements when some values are undefined', async () => {
+    renderComponent({ search: '', price: '' });
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole('button', { name: /search/i }));
+
+    const searchParamsArg = mockSubmit.mock.calls[0][0] as URLSearchParams;
+    expect(searchParamsArg.has('genre')).toBe(true);
+    expect(searchParamsArg.has('price')).toBe(true);
+    expect(searchParamsArg.has('maxPrice')).toBe(true);
+    expect(searchParamsArg.get('maxPrice')).toBe('1000');
+  });
+
+
 });

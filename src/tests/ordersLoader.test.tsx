@@ -1,9 +1,7 @@
 import { toast } from 'react-toastify';
 import { ordersLoader } from '../pages/Orders';
-import { api } from '../utils/api';
 
 jest.mock('../utils/api');
-const mockApi = api as jest.Mocked<typeof api>;
 
 jest.mock('react-toastify', () => ({
   toast: {

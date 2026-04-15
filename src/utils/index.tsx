@@ -43,7 +43,7 @@ export const generateQuantityOptions = (number: number) => {
   return Array.from({ length: number }, (_, index) => {
     const quantity = index + 1;
     return (
-      <option key={quantity} value={quantity}>
+      <option key={quantity} value={quantity} >
         {quantity}
       </option>
     );
