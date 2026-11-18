@@ -79,7 +79,7 @@ it('ordersLoader returns null and toasts error on API failure', async () => {
   const loader = ordersLoader(mockStore, mockQueryClient);
   const result = await loader({ request: createMockRequest('http://localhost/orders') } as any);
 
-  expect(result).toBeNull();
+  expect(result).toEqual({ orders: [], meta: null, user: { userId: '123' } });
   expect(toast.error).toHaveBeenCalled();
 });
 

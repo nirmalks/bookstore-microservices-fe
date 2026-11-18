@@ -7,8 +7,8 @@ export const orderQuerySchema = z.object({
 export type OrderQueryParams = z.infer<typeof orderQuerySchema>;
 
 export const orderItemSchema = z.object({
-  id: z.number(),
-  name: z.string(),
+  id: z.coerce.number(),
+  name: z.string().optional().nullable(),
   quantity: z.number(),
   price: z.number(),
 });
@@ -16,13 +16,13 @@ export const orderItemSchema = z.object({
 export type OrderItem = z.infer<typeof orderItemSchema>;
 
 export const orderAddressSchema = z.object({
-  address: z.string(),
-});
+  address: z.string().optional().nullable().transform((val) => val ?? ''),
+}).passthrough();
 
 export type OrderAddress = z.infer<typeof orderAddressSchema>;
 
 export const orderSchema = z.object({
-  id: z.string(),
+  id: z.coerce.string(),
   address: orderAddressSchema,
   items: z.array(orderItemSchema),
   totalCost: z.number(),

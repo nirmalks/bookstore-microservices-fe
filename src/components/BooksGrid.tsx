@@ -11,7 +11,7 @@ const BooksGrid: React.FC = () => {
         books.map((book: Book) => {
           const { title, price, imagePath } = book;
           const formattedPrice = formatPrice(price);
-          const image = `/images/${imagePath}`;
+          const image = imagePath ? `/images/${imagePath}` : '/images/placeholder.jpg';
           return (
             <Link
               key={book.id}
