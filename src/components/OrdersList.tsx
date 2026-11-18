@@ -3,7 +3,8 @@ import { useLoaderData } from 'react-router';
 import { Order, OrdersListData } from '../schemas/order';
 
 const OrdersList = (): JSX.Element => {
-  const { orders } = useLoaderData<OrdersListData>();
+  const data = useLoaderData() as OrdersListData | null;
+  const orders = data?.orders;
   if (!orders || orders.length === 0) {
     return (
       <div className="mt-8 text-center">
@@ -33,8 +34,8 @@ const OrdersList = (): JSX.Element => {
                 );
                 return (
                   <tr key={id}>
-                    <td>{order.address.address}</td>
-                    <td>{order.items.length}</td>
+                    <td>{order.address?.address || 'N/A'}</td>
+                    <td>{order.items?.length || 0}</td>
                     <td>{order.totalCost}</td>
                     <td>{date}</td>
                   </tr>

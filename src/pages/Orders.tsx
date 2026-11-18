@@ -54,7 +54,7 @@ export const ordersLoader =
       } catch (error: unknown) {
         const errorMessage = getErrorMessage(error);
         toast.error(errorMessage);
-        return null;
+        return { orders: [], meta: null, user };
       }
     };
 

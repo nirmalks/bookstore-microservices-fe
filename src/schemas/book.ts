@@ -47,8 +47,8 @@ export const bookSchema = z.object({
   isbn: z.string(),
   publishedDate: z.string(),
   genreIds: z.array(z.number()),
-  imagePath: z.string().optional(),
-  quantity: z.number(),
+  imagePath: z.string().optional().nullable(),
+  quantity: z.number().default(1),
 })
 
 export type Book = z.infer<typeof bookSchema>;
